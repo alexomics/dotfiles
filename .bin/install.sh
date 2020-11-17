@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # To install run:
-# /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/alexomics/dotfiles/main/install.sh)"
+# /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/alexomics/dotfiles/main/.bin/install.sh)"
 
 set -e
 
@@ -23,7 +23,7 @@ then
 fi
 
 # Clone dotfiles
-git clone --bare --recurse-submodules "$REPO" "$HOME"/.cfg
+git clone --bare  "$REPO" "$HOME"/.cfg
 
 if ! dotconf checkout;
 then
@@ -35,6 +35,7 @@ else
 fi
 dotconf checkout
 dotconf config status.showUntrackedFiles no
+dotconf submodule --init --recursive
 
 # Install Oh My ZSH
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
