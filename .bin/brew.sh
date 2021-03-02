@@ -22,12 +22,14 @@ brew install tmux
 brew install xz
 
 # Install other useful binaries.
+brew install ctags
 brew install git
 brew install git-lfs
 brew install gs
 brew install htop
 brew cask install iterm2
 brew install imagemagick
+brew cask install mactex-no-gui
 brew install p7zip
 brew install pigz
 brew install pv

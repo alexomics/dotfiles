@@ -43,3 +43,9 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 # Install miniconda
 curl -fsSLO https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
 /bin/bash Miniconda3-latest-MacOSX-x86_64.sh -b -p "$HOME/.miniconda3"
+
+# Remove conda installer
+if [ -f "Miniconda3-latest-MacOSX-x86_64.sh" ]; then
+    rm "Miniconda3-latest-MacOSX-x86_64.sh"
+fi
+
