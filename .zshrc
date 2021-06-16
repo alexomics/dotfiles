@@ -12,7 +12,8 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-alias ll="ls -gtrhT"
+alias l="exa -l"
+alias ll="exa -ls time"
 alias dotconf="/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME"
 
 # >>> conda initialize >>>
