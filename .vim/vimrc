@@ -1,0 +1,219 @@
+"=====================================================
+"" Syntax guide
+"=====================================================
+" Commands                Mode
+" --------                ----
+" nmap, nnoremap          Normal mode
+" imap, inoremap          Insert and Replace mode
+" vmap, vnoremap          Visual and Select mode
+" xmap, xnoremap          Visual mode
+" smap, snoremap          Select mode
+" cmap, cnoremap          Command-line mode
+" omap, onoremap          Operator pending mode
+"
+" 'nore' = non-recursive
+"
+" Key notation
+" ------------
+" <BS>           Backspace
+" <Tab>          Tab
+" <CR>           Enter
+" <Enter>        Enter
+" <Return>       Enter
+" <Esc>          Escape
+" <Space>        Space
+" <Up>           Up arrow
+" <Down>         Down arrow
+" <Left>         Left arrow
+" <Right>        Right arrow
+" <F1> - <F12>   Function keys 1 to 12
+" #1, #2..#9,#0  Function keys F1 to F9, F10
+" <Insert>       Insert
+" <Del>          Delete
+" <Home>         Home
+" <End>          End
+" <PageUp>       Page-Up
+" <PageDown>     Page-Down
+" <bar>          the '|' character, which otherwise needs to be escaped '\|'
+"
+" Other notations
+" ---------------
+" <silent>       Don't show commands being executed
+" <leader>       Map leader for quick commands 
+
+let $vimhome=fnamemodify(resolve(expand("~/.vimrc")), ':p:h')
+let $vundle=$vimhome."/bundle/Vundle.vim"
+
+" Be iMproved
+set nocompatible
+
+"=====================================================
+"" Vundle settings
+"=====================================================
+filetype off
+set rtp+=$vundle
+call vundle#begin()
+
+    Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
+
+    "-------------------=== Code/Project navigation ===-------------
+    Plugin 'scrooloose/nerdtree'                " Project and file navigation
+    Plugin 'ctrlpvim/ctrlp.vim'                 " Search for file in project
+
+    "-------------------=== Other ===-------------------------------
+    Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
+    Plugin 'vim-airline/vim-airline-themes'     " Themes for airline
+    Plugin 'fisadev/FixedTaskList.vim'          " Pending tasks list use <leader>t to open 
+    " This one is handy, but tmux is better
+    " Plugin 'rosenfeld/conque-term'              " Consoles as buffers
+    Plugin 'tpope/vim-surround'                 " Parentheses, brackets, quotes, XML tags, and more
+    Plugin 'flazz/vim-colorschemes'             " Colorschemes
+
+    "-------------------=== Languages support ===-------------------
+    Plugin 'tpope/vim-commentary'               " Comment stuff out
+    Plugin 'Valloric/YouCompleteMe'             " Autocomplete plugin
+    Plugin 'rust-lang/rust.vim'                 " Add Rust 
+
+    "-------------------=== Python  ===-----------------------------
+    Plugin 'scrooloose/syntastic'               " Syntax checking plugin for Vim
+    Plugin 'psf/black'                          " Black code formatter
+
+call vundle#end()                           " required
+filetype on
+filetype plugin on
+filetype plugin indent on
+
+"=====================================================
+"" General settings
+"=====================================================
+let mapleader = "\<Space>"                  " brave leader char
+nmap <silent> <leader>w :w<CR>
+
+syntax enable                               " syntax highlight
+
+set t_Co=256                                " set 256 colors
+colorscheme wombat256mod                    " set color scheme
+
+set number                                  " show line numbers
+set relativenumber                          " make them relative to the cursor
+set ruler
+set ttyfast                                 " terminal acceleration
+
+set tabstop=4                               " 4 whitespaces for tabs visual presentation
+set shiftwidth=4                            " shift lines by 4 spaces
+set smarttab                                " set tabs for a shifttabs logic
+set expandtab                               " expand tabs into spaces
+set autoindent                              " indent when moving to the next line while writing code
+
+set cursorline                              " shows line under the cursor's line
+set showmatch                               " shows matching part of bracket pairs (), [], {}
+
+set enc=utf-8	                            " utf-8 by default
+
+set nobackup 	                            " no backup files
+set nowritebackup                           " only in case you don't want a backup file while editing
+set noswapfile 	                            " no swap files
+
+set backspace=indent,eol,start              " backspace removes all (indents, EOLs, start) What is start?
+
+set scrolloff=10                            " let 10 lines before/after cursor during scroll
+
+set clipboard=unnamed                       " use system clipboard
+
+set exrc                                    " enable usage of additional .vimrc files from working directory
+set secure                                  " prohibit .vimrc files to execute shell, create files, etc...
+
+" Additional mappings for Esc (useful for MacBook with touch bar)
+inoremap jj <Esc>
+inoremap jk <Esc>
+
+" Sensible movement: move through wrapped lines like they are separate 
+noremap j gj
+noremap k gk
+noremap <UP> gk
+noremap <DOWN>  gj
+
+"=====================================================
+"" Tabs / Buffers settings
+"=====================================================
+tab sball
+set switchbuf=useopen
+set laststatus=2
+nmap <F9> :bprev<CR>
+nmap <leader>p :bprev<CR>
+nmap <F10> :bnext<CR>
+nmap <leader>n :bnext<CR>
+nmap <silent> <leader>q :SyntasticCheck # <CR> :bp <BAR> bd #<CR>
+
+"=====================================================
+"" Search settings
+"=====================================================
+set ignorecase                              " ignore case
+set incsearch	                            " incremental search
+set hlsearch	                            " highlight search results
+" Clear highlight after search
+nmap <leader>h :noh<CR>
+
+"=====================================================
+"" AirLine settings
+"=====================================================
+let g:airline_theme='badwolf'
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#formatter='unique_tail'
+let g:airline_powerline_fonts=0
+
+"=====================================================
+"" NERDTree settings
+"=====================================================
+let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NERDTree
+let NERDTreeWinSize=40
+autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
+nmap " :NERDTreeToggle<CR>
+
+"=====================================================
+"" Python settings
+"=====================================================
+" highlight 'long' lines (>= 80 symbols) in python files
+augroup vimrc_autocmds
+    autocmd!
+    autocmd FileType python,rst,c,cpp highlight Excess ctermbg=DarkGrey guibg=Black
+    autocmd FileType python,rst,c,cpp match Excess /\%81v.*/
+    autocmd FileType python,rst,c,cpp set nowrap
+    autocmd FileType python,rst,c,cpp set colorcolumn=80
+augroup END
+
+" syntastic
+let g:syntastic_python_python_exec='python'
+let g:syntastic_always_populate_loc_list=1
+let g:syntastic_auto_loc_list=1
+let g:syntastic_enable_signs=1
+let g:syntastic_check_on_wq=0
+let g:syntastic_aggregate_errors=1
+let g:syntastic_loc_list_height=5
+let g:syntastic_error_symbol='X'
+let g:syntastic_style_error_symbol='X'
+let g:syntastic_warning_symbol='x'
+let g:syntastic_style_warning_symbol='x'
+let g:syntastic_python_checkers=['flake8', 'pydocstyle', 'python']
+
+" YouCompleteMe
+set completeopt-=preview
+
+let g:ycm_global_ycm_extra_conf='~/.vim/ycm_extra_conf.py'
+let g:ycm_confirm_extra_conf=0
+
+nmap <leader>g :YcmCompleter GoTo<CR>
+nmap <leader>d :YcmCompleter GoToDefinition<CR>
+
+" Black
+autocmd BufWritePre *.py execute ':Black'
+
+" LaTeX indents
+autocmd BufRead,BufNewFile *.tex set filetype=tex
+autocmd FileType tex
+    \ setlocal tabstop=2 softtabstop=2 shiftwidth=2
+nmap <leader>cc :w<CR>:!./compile.sh<CR>
+
+" Spellcheck
+" set spelllang=en
+" set spell
