@@ -57,8 +57,9 @@ call vundle#begin()
     Plugin 'VundleVim/Vundle.vim'               " let Vundle manage Vundle, required
 
     "-------------------=== Code/Project navigation ===-------------
-    Plugin 'scrooloose/nerdtree'                " Project and file navigation
+    " Plugin 'scrooloose/nerdtree'                " Project and file navigation
     Plugin 'ctrlpvim/ctrlp.vim'                 " Search for file in project
+    Plugin 'majutsushi/tagbar'
 
     "-------------------=== Other ===-------------------------------
     Plugin 'bling/vim-airline'                  " Lean & mean status/tabline for vim
@@ -86,9 +87,6 @@ filetype plugin indent on
 "=====================================================
 "" General settings
 "=====================================================
-let mapleader = "\<Space>"                  " brave leader char
-nmap <silent> <leader>w :w<CR>
-
 syntax enable                               " syntax highlight
 
 set t_Co=256                                " set 256 colors
@@ -123,36 +121,91 @@ set clipboard=unnamed                       " use system clipboard
 set exrc                                    " enable usage of additional .vimrc files from working directory
 set secure                                  " prohibit .vimrc files to execute shell, create files, etc...
 
-" Additional mappings for Esc (useful for MacBook with touch bar)
+"=====================================================
+"" [re] mappings
+"=====================================================
+" Set leader to space bar
+let mapleader = "\<Space>" 
+
+" Esc shortcuts use `jj' and `jk' in insert mode
+" and <Space>j in visual mode
 inoremap jj <Esc>
 inoremap jk <Esc>
+vnoremap <leader>j <Esc>
+
+" Quick save
+nmap <silent> <leader>w :w<CR>
+" Visual mode
+nmap <leader><leader> V
+
+" Jump to start and end using home row keys
+map H ^
+map L $
+
+" " These mess with the scroll wheel
+" " No arrow keys --- force yourself to use the home row
+" nnoremap <up> <nop>
+" nnoremap <down> <nop>
+" inoremap <up> <nop>
+" inoremap <down> <nop>
+" inoremap <left> <nop>
+" inoremap <right> <nop>
 
 " Sensible movement: move through wrapped lines like they are separate 
 noremap j gj
 noremap k gk
-noremap <UP> gk
-noremap <DOWN>  gj
+" noremap <UP> gk
+" noremap <DOWN>  gj
+
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
+" Wrapping options
+set formatoptions=tc " wrap text and comments using textwidth
+set formatoptions+=r " continue comments when pressing ENTER in I mode
+set formatoptions+=q " enable formatting of comments with gq
+set formatoptions+=n " detect lists for formatting
+set formatoptions+=b " auto-wrap in insert mode, and do not wrap old long lines
+
+" Show pesky hidden chars
+set listchars=nbsp:¬,extends:»,precedes:«,trail:•
 
 "=====================================================
 "" Tabs / Buffers settings
 "=====================================================
+" fast open using fuzzy search 
+nnoremap <leader>o :CtrlP<CR>
+
 tab sball
 set switchbuf=useopen
 set laststatus=2
+
+" Left and right can switch buffers
+nnoremap <left> :bp<CR>
+nnoremap <right> :bn<CR>
 nmap <F9> :bprev<CR>
-nmap <leader>p :bprev<CR>
 nmap <F10> :bnext<CR>
-nmap <leader>n :bnext<CR>
 nmap <silent> <leader>q :SyntasticCheck # <CR> :bp <BAR> bd #<CR>
 
 "=====================================================
 "" Search settings
 "=====================================================
 set ignorecase                              " ignore case
+set smartcase                               " except when using capital letters
 set incsearch	                            " incremental search
 set hlsearch	                            " highlight search results
 " Clear highlight after search
 nmap <leader>h :noh<CR>
+" Center search results
+" next
+noremap <silent> n nzz
+" prev
+noremap <silent> N Nzz
+" next of word under cursor
+noremap <silent> * *zz
+" prev of word under cursor
+noremap <silent> # #zz
 
 "=====================================================
 "" AirLine settings
@@ -161,14 +214,6 @@ let g:airline_theme='badwolf'
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#formatter='unique_tail'
 let g:airline_powerline_fonts=0
-
-"=====================================================
-"" NERDTree settings
-"=====================================================
-let NERDTreeIgnore=['\.pyc$', '\.pyo$', '__pycache__$']     " Ignore files in NERDTree
-let NERDTreeWinSize=40
-autocmd VimEnter * if !argc() | NERDTree | endif  " Load NERDTree only if vim is run without arguments
-nmap " :NERDTreeToggle<CR>
 
 "=====================================================
 "" Python settings
@@ -217,3 +262,8 @@ nmap <leader>cc :w<CR>:!./compile.sh<CR>
 " Spellcheck
 " set spelllang=en
 " set spell
+
+
+" let g:tagbar_autofocus=0
+" let g:tagbar_width=42
+" autocmd BufEnter *.py :call tagbar#autoopen(1)
